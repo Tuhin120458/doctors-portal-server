@@ -34,20 +34,32 @@ async function run() {
 
         app.get('/available', async (req, res) => {
             const date = req.query.date;
+
             const services = await serviceCollection.find().toArray();
 
             const qurey = { date: date };
-            const bookings = await bookingCollection.find().toArray();
+            const bookings = await bookingCollection.find(qurey).toArray();
 
             services.forEach(service => {
                 const serviceBookings = bookings.filter(book => book.treatment === service.name);
                 const bookedSlots = serviceBookings.map(book => book.slot);
                 const available = service.slots.filter(slot => !bookedSlots.includes(slot));
                 service.slots = available;
+                console.log(service.slots.length)
+
             });
 
             res.send(services);
         })
+
+
+        app.get('/booking', async (req, res) => {
+            const patient = req.query.patient;
+            const query = { patient: patient };
+            const bookings = await bookingCollection.find(query).toArray();
+            res.send(bookings);
+        })
+
 
 
 
