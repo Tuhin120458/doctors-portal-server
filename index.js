@@ -161,6 +161,13 @@ async function run() {
             const doctor = req.body;
             const result = await doctorCollection.insertOne(doctor);
             res.send(result);
+        });
+
+        app.delete('/doctor/:email', verifyJWT, veryfyAdmin, async (req, res) => {
+            const email = req.params.email;
+            const filter = { email: email };
+            const result = await doctorCollection.deleteOne(filter);
+            res.send(result);
         })
 
     }
